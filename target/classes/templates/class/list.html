@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorate="~{fragments/main_layout}">
+<head>
+    <meta charset="UTF-8">
+     <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+
+    <title>List Of Classes</title>
+</head>
+<body>
+<div>
+    <hr>
+    <div layout:fragment="content" class="container">
+      <button><a href="/classes/create"><i style='font-size:15px' class='far'>&#xf0c5; Create new class</i></a></button>
+        <h1>Classes</h1>
+        <form>
+            <input name="name" type="text" placeholder="Enter_name_Class" th:value="${name}">
+            <input type="submit" value="Search">
+        </form>
+        <p>
+            <th:block th:if="${message}">
+        <p th:text="${message}"></p>
+        </th:block>
+        </p>
+        <th:block th:if="${classes.getTotalElements() > 0}"></th:block>
+        <table border="1" class="table">
+            <tr>
+                <th>STT</th>
+                <th>Name</th>
+                <th>Course</th>
+                <th>Start Day</th>
+                <th>End Day</th>
+                <th>Learning Status</th>
+                <th>Total Student</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th>View</th>
+            </tr>
+            <th:block th:each="class ,count : ${classes}">
+                <tr>
+                    <td th:text="${count.count}"></td>
+                    <td><a th:href="@{/classes/__${class.id}__/students}" th:text="${class.name}"></a></td>
+                    <td th:text="${class.course.name}"></td>
+                    <td th:text="${class.endDay}"></td>
+                    <td th:text="${class.startDay}"></td>
+                    <td th:text="${class.learningStatus}"></td>
+                    <td th:text="${class.totalStudent}"></td>
+                    <td><a th:href="@{/classes/edit/__${class.id}__}"><i style='font-size:16px' class='far'>&#xf044;Edit</i></a></td>
+                    <td>
+                        <!-- Button trigger modal -->
+                        <a type="button"  data-toggle="modal" th:attr="data-target='#'+${class.getId()}"><i style='font-size:16px' class='far'>&#xf2ed;Delete</i></a>
+
+
+                        <div class="modal" th:attr="id=${class.getId()}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Delete Class</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                You definitely want to delete the class?
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" ><a th:href="@{/classes/delete/__${class.id}__}">Delete</a></button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                    </td>
+
+                    <td>
+                        <a href="#myModal" data-toggle="modal"><i style='font-size:16px' class='far'>&#xf15c;View</i></a>
+                         <!-- Modal HTML -->
+                        <div id="myModal" class="modal fade" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <div class="w3-container w3-green">
+                                            <h5 class="modal-title">View of Class</h5>
+                                            <button type="button" th:size="50px" class="close" style="text-align: right" data-dismiss="modal">
+                                                       &times;
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table class="table" >
+                                            <tr>
+                                                <td>Name:</td>
+                                                <td th:text="${class.name}"></a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Course:</td>
+                                                <td th:text="${class.course.name}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Start day:</td>
+                                                <td th:text="${class.startDay}"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>End Day:</td>
+                                                <td th:text="${class.endDay}"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Learning Status:</td>
+                                                <td th:text="${class.learningStatus}"></td>
+                                            </tr>
+
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </th:block>
+        </table>
+        <th:block th:switch="${name}">
+            <div>
+                <a th:href="@{'/classes/list'(page=${classes.number - 1})}" th:if="${classes.hasPrevious()}">Previous</a>
+                <span th:text="${classes.number + 1}"></span>/<span th:text="${classes.totalPages}"></span>
+                <a th:href="@{'/classes/list'(page=${classes.getNumber() + 1})}" th:if="${classes.hasNext()}">Next</a>
+            </div>
+        </th:block>
+    </div>
+</div>
+</form>
+</body>
+</html>
